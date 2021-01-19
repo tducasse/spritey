@@ -44,7 +44,7 @@ functions:
     handler: handler.getSprites
     events:
       - http:
-          path: getSprites
+          path: getSprites/{tag}
           method: get
           cors: true
 

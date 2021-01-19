@@ -16,7 +16,7 @@ module.exports.requestUploadURL = async (event, context, callback) => {
   const uploadURL = s3.getSignedUrl("putObject", s3Params);
 
   const item = {
-    s3_path: uploadURL,
+    s3_path: uploadURL.split("?")[0],
     tag: params.tag,
   };
 
@@ -65,7 +65,7 @@ module.exports.getTags = async (event, context, callback) => {
 module.exports.getSprites = async (event, context, callback) => {
   const docClient = new DynamoDB.DocumentClient();
 
-  const params = JSON.parse(event.body);
+  const params = event.pathParameters;
 
   const queryParams = {
     TableName: "sprites",
