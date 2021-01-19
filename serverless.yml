@@ -13,6 +13,14 @@ provider:
       Action: 
         - "s3:*"
       Resource: "arn:aws:s3:::spritey-upload/*"
+    - Effect: "Allow"
+      Action:
+        - "dynamodb:*"
+      Resource: "arn:aws:dynamodb:*:*:table/sprites"
+    - Effect: "Allow"
+      Action:
+        - "dynamodb:*"
+      Resource: "arn:aws:dynamodb:*:*:table/tags"
 
 functions:
   requestUploadURL:
@@ -22,9 +30,55 @@ functions:
           path: requestUploadURL
           method: post
           cors: true
+  getTags:
+    handler: handler.getTags
+    events:
+      - http:
+          path: getTags
+          method: get
+          cors: true
+  getSprites:
+    handler: handler.getSprites
+    events:
+      - http:
+          path: getSprites
+          method: get
+          cors: true
 
 resources:
   Resources:
+    sprites:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: sprites
+        AttributeDefinitions:
+          - AttributeName: tag
+            AttributeType: S
+          - AttributeName: s3_path
+            AttributeType: S
+        KeySchema:
+          - AttributeName: tag
+            KeyType: HASH 
+          - AttributeName: s3_path
+            KeyType: RANGE 
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
+    tags:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: tags
+        AttributeDefinitions:
+          - AttributeName: tag
+            AttributeType: S
+        KeySchema:
+          - AttributeName: tag
+            KeyType: HASH 
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
     UploadBucket:
       Type: AWS::S3::Bucket
       Properties:
