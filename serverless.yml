@@ -3,6 +3,8 @@ service: spritey
 frameworkVersion: '2'
 
 provider:
+  apiGateway:
+    shouldStartNameWithService: true
   name: aws
   runtime: nodejs12.x
   lambdaHashingVersion: 20201221
@@ -13,13 +15,13 @@ provider:
       Resource: "arn:aws:s3:::slsupload/*"
 
 functions:
-  hello:
+  requestUploadURL:
     handler: handler.requestUploadURL
     events:
       - http:
-        path: requestUploadURL
-        method: post
-        cors: true
+          path: requestUploadURL
+          method: post
+          cors: true
 
 resources:
   Resources:
