@@ -1,6 +1,6 @@
 const { S3, DynamoDB } = require("aws-sdk");
 
-module.exports.requestUploadURL = (event, context, callback) => {
+module.exports.requestUploadURL = async (event, context, callback) => {
   const s3 = new S3();
   const docClient = new DynamoDB.DocumentClient();
 
@@ -16,21 +16,25 @@ module.exports.requestUploadURL = (event, context, callback) => {
   const uploadURL = s3.getSignedUrl("putObject", s3Params);
 
   const item = {
-    s3Path: uploadURL,
+    s3_path: uploadURL,
     tag: params.tag,
   };
 
-  docClient.put({
-    TableName: "sprites",
-    Item: item,
-  });
+  await docClient
+    .put({
+      TableName: "sprites",
+      Item: item,
+    })
+    .promise();
 
-  docClient.put({
-    TableName: "tags",
-    Item: {
-      tag: params.tag,
-    },
-  });
+  await docClient
+    .put({
+      TableName: "tags",
+      Item: {
+        tag: params.tag,
+      },
+    })
+    .promise();
 
   callback(null, {
     statusCode: 200,
