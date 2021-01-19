@@ -12,7 +12,7 @@ provider:
     - Effect: "Allow"
       Action: 
         - "s3:*"
-      Resource: "arn:aws:s3:::slsupload/*"
+      Resource: "arn:aws:s3:::spriteyUpload/*"
 
 functions:
   requestUploadURL:
@@ -28,7 +28,7 @@ resources:
     UploadBucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: slsupload
+        BucketName: spriteyUpload
         AccessControl: PublicRead
         CorsConfiguration:
           CorsRules:
