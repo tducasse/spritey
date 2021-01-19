@@ -28,7 +28,7 @@ module.exports.requestUploadURL = (event, context, callback) => {
   docClient.put({
     TableName: "tags",
     Item: {
-      tag,
+      tag: params.tag,
     },
   });
 

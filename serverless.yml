@@ -1,5 +1,8 @@
 service: spritey
 
+plugins:
+  - serverless-offline
+
 frameworkVersion: '2'
 
 provider:
