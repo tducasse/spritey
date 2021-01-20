@@ -1,4 +1,5 @@
 const { S3, DynamoDB } = require("aws-sdk");
+const { nanoid } = require("nanoid");
 
 module.exports.requestUploadURL = async (event, context, callback) => {
   const s3 = new S3();
@@ -8,7 +9,7 @@ module.exports.requestUploadURL = async (event, context, callback) => {
 
   const s3Params = {
     Bucket: "spritey-upload",
-    Key: params.name,
+    Key: `${params.tag}_${nanoid()}`,
     ContentType: params.type,
     ACL: "public-read",
   };
@@ -50,6 +51,23 @@ module.exports.getTags = async (event, context, callback) => {
 
   const queryParams = {
     TableName: "tags",
+  };
+
+  const data = await docClient.scan(queryParams).promise();
+  callback(null, {
+    statusCode: 200,
+    headers: {
+      "Access-Control-Allow-Origin": "https://spritey.tducasse.com",
+    },
+    body: JSON.stringify({ data }),
+  });
+};
+
+module.exports.getChallenges = async (event, context, callback) => {
+  const docClient = new DynamoDB.DocumentClient();
+
+  const queryParams = {
+    TableName: "challenges",
   };
 
   const data = await docClient.scan(queryParams).promise();
