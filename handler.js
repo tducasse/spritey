@@ -19,6 +19,11 @@ module.exports.requestUploadURL = async (event, context, callback) => {
   const item = {
     s3_path: uploadURL.split("?")[0],
     tag: params.tag,
+    height: 32,
+    width: 32,
+    fps: 12,
+    frames: 2,
+    scale: 6,
   };
 
   await docClient
@@ -100,5 +105,36 @@ module.exports.getSprites = async (event, context, callback) => {
       "Access-Control-Allow-Origin": "https://spritey.tducasse.com",
     },
     body: JSON.stringify({ data }),
+  });
+};
+
+module.exports.updateSettings = async (event, context, callback) => {
+  const docClient = new DynamoDB.DocumentClient();
+
+  const params = JSON.parse(event.body);
+
+  console.log(params);
+
+  const queryParams = {
+    TableName: "sprites",
+    Key: { tag: params.tag, s3_path: params.src },
+    UpdateExpression: `set fps = :newfps, width = :newwidth, height = :newheight, frames = :newframes,  scale = :newscale`,
+    ExpressionAttributeValues: {
+      ":newfps": params.fps,
+      ":newwidth": params.width,
+      ":newheight": params.height,
+      ":newframes": params.frames,
+      ":newscale": params.scale,
+    },
+  };
+
+  await docClient.update(queryParams).promise();
+
+  callback(null, {
+    statusCode: 200,
+    headers: {
+      "Access-Control-Allow-Origin": "https://spritey.tducasse.com",
+    },
+    body: JSON.stringify({ updated: true }),
   });
 };

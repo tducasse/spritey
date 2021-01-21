@@ -58,6 +58,13 @@ functions:
           path: getChallenges
           method: get
           cors: true
+  updateSettings:
+    handler: handler.updateSettings
+    events:
+      - http:
+          path: updateSettings
+          method: patch
+          cors: true
 
 resources:
   Resources:
