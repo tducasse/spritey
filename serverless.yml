@@ -1,6 +1,7 @@
 service: spritey
 
 plugins:
+  - serverless-esbuild
   - serverless-offline
 
 frameworkVersion: '2'
@@ -37,6 +38,7 @@ functions:
           path: requestUploadURL
           method: post
           cors: true
+          # authorizer: aws_iam
   getTags:
     handler: handler.getTags
     events:
@@ -44,6 +46,7 @@ functions:
           path: getTags
           method: get
           cors: true
+          # authorizer: aws_iam
   getSprites:
     handler: handler.getSprites
     events:
@@ -51,6 +54,7 @@ functions:
           path: getSprites/{tag}
           method: get
           cors: true
+          # authorizer: aws_iam
   getChallenges:
     handler: handler.getChallenges
     events:
@@ -58,6 +62,7 @@ functions:
           path: getChallenges
           method: get
           cors: true
+          # authorizer: aws_iam
   updateSettings:
     handler: handler.updateSettings
     events:
@@ -65,6 +70,16 @@ functions:
           path: updateSettings
           method: patch
           cors: true
+          # authorizer: aws_iam
+  testAuth:
+    handler: handler.testAuth
+    events:
+      - http:
+          path: testAuth
+          method: get
+          cors: true
+          authorizer: aws_iam
+          
 
 resources:
   Resources:

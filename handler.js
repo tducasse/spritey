@@ -1,7 +1,17 @@
-const { S3, DynamoDB } = require("aws-sdk");
-const { nanoid } = require("nanoid");
+import { S3, DynamoDB } from "aws-sdk";
+import { nanoid } from "nanoid";
 
-module.exports.requestUploadURL = async (event, context, callback) => {
+const headers = {
+  "Access-Control-Allow-Origin": "https://spritey.tducasse.com",
+};
+
+const getCurrentUser = (event) => {
+  return (
+    ((event.requestContext || {}).identity || {}).cognitoIdentityId || false
+  );
+};
+
+export const requestUploadURL = async (event) => {
   const s3 = new S3();
   const docClient = new DynamoDB.DocumentClient();
 
@@ -42,16 +52,14 @@ module.exports.requestUploadURL = async (event, context, callback) => {
     })
     .promise();
 
-  callback(null, {
+  return {
     statusCode: 200,
-    headers: {
-      "Access-Control-Allow-Origin": "https://spritey.tducasse.com",
-    },
+    headers,
     body: JSON.stringify({ uploadURL }),
-  });
+  };
 };
 
-module.exports.getTags = async (event, context, callback) => {
+export const getTags = async (event) => {
   const docClient = new DynamoDB.DocumentClient();
 
   const queryParams = {
@@ -59,16 +67,15 @@ module.exports.getTags = async (event, context, callback) => {
   };
 
   const data = await docClient.scan(queryParams).promise();
-  callback(null, {
+
+  return {
     statusCode: 200,
-    headers: {
-      "Access-Control-Allow-Origin": "https://spritey.tducasse.com",
-    },
+    headers,
     body: JSON.stringify({ data }),
-  });
+  };
 };
 
-module.exports.getChallenges = async (event, context, callback) => {
+export const getChallenges = async (event) => {
   const docClient = new DynamoDB.DocumentClient();
 
   const queryParams = {
@@ -76,16 +83,15 @@ module.exports.getChallenges = async (event, context, callback) => {
   };
 
   const data = await docClient.scan(queryParams).promise();
-  callback(null, {
+
+  return {
     statusCode: 200,
-    headers: {
-      "Access-Control-Allow-Origin": "https://spritey.tducasse.com",
-    },
+    headers,
     body: JSON.stringify({ data }),
-  });
+  };
 };
 
-module.exports.getSprites = async (event, context, callback) => {
+export const getSprites = async (event) => {
   const docClient = new DynamoDB.DocumentClient();
 
   const params = event.pathParameters;
@@ -99,16 +105,14 @@ module.exports.getSprites = async (event, context, callback) => {
 
   const data = await docClient.query(queryParams).promise();
 
-  callback(null, {
+  return {
     statusCode: 200,
-    headers: {
-      "Access-Control-Allow-Origin": "https://spritey.tducasse.com",
-    },
+    headers,
     body: JSON.stringify({ data }),
-  });
+  };
 };
 
-module.exports.updateSettings = async (event, context, callback) => {
+export const updateSettings = async (event) => {
   const docClient = new DynamoDB.DocumentClient();
 
   const params = JSON.parse(event.body);
@@ -130,11 +134,16 @@ module.exports.updateSettings = async (event, context, callback) => {
 
   await docClient.update(queryParams).promise();
 
-  callback(null, {
+  return {
     statusCode: 200,
-    headers: {
-      "Access-Control-Allow-Origin": "https://spritey.tducasse.com",
-    },
+    headers,
     body: JSON.stringify({ updated: true }),
-  });
+  };
+};
+
+export const testAuth = async () => {
+  return {
+    statusCode: 200,
+    body: "OK",
+  };
 };
