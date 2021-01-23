@@ -3,12 +3,7 @@ import { nanoid } from "nanoid";
 
 const headers = {
   "Access-Control-Allow-Origin": "https://spritey.tducasse.com",
-};
-
-const getCurrentUser = (event) => {
-  return (
-    ((event.requestContext || {}).identity || {}).cognitoIdentityId || false
-  );
+  "Access-Control-Allow-Credentials": true,
 };
 
 export const requestUploadURL = async (event) => {
@@ -59,7 +54,7 @@ export const requestUploadURL = async (event) => {
   };
 };
 
-export const getTags = async (event) => {
+export const getTags = async () => {
   const docClient = new DynamoDB.DocumentClient();
 
   const queryParams = {
@@ -75,7 +70,7 @@ export const getTags = async (event) => {
   };
 };
 
-export const getChallenges = async (event) => {
+export const getChallenges = async () => {
   const docClient = new DynamoDB.DocumentClient();
 
   const queryParams = {
@@ -138,12 +133,5 @@ export const updateSettings = async (event) => {
     statusCode: 200,
     headers,
     body: JSON.stringify({ updated: true }),
-  };
-};
-
-export const testAuth = async () => {
-  return {
-    statusCode: 200,
-    body: "OK",
   };
 };
