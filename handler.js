@@ -141,12 +141,12 @@ export const updateChallenge = async (event) => {
 
   const item = {
     name: params.name,
-    end_date: params.timestamp,
+    end_date: params.end_date,
   };
 
   await docClient
     .delete({
-      Key: { name: params.name, end_date: params.oldChallengeDate },
+      Key: { name: params.oldName, end_date: params.oldDate },
       TableName: "challenges",
     })
     .promise();
@@ -155,6 +155,6 @@ export const updateChallenge = async (event) => {
   return {
     statusCode: 200,
     headers,
-    body: JSON.stringify({ updated: true }),
+    body: JSON.stringify({ update: true }),
   };
 };
