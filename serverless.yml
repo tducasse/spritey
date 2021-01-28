@@ -64,6 +64,14 @@ functions:
           method: get
           cors: true
           authorizer: aws_iam
+  updateChallenge:
+    handler: handler.updateChallenge
+    events:
+      - http:
+          path: updateChallenge
+          method: post
+          cors: true
+          authorizer: aws_iam
   updateSettings:
     handler: handler.updateSettings
     events:

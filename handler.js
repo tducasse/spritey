@@ -112,8 +112,6 @@ export const updateSettings = async (event) => {
 
   const params = JSON.parse(event.body);
 
-  console.log(params);
-
   const queryParams = {
     TableName: "sprites",
     Key: { tag: params.tag, s3_path: params.src },
@@ -128,6 +126,31 @@ export const updateSettings = async (event) => {
   };
 
   await docClient.update(queryParams).promise();
+
+  return {
+    statusCode: 200,
+    headers,
+    body: JSON.stringify({ updated: true }),
+  };
+};
+
+export const updateChallenge = async (event) => {
+  const docClient = new DynamoDB.DocumentClient();
+
+  const params = JSON.parse(event.body);
+
+  const item = {
+    name: params.name,
+    end_date: params.timestamp,
+  };
+
+  await docClient
+    .delete({
+      Key: { name: params.name, end_date: params.oldChallengeDate },
+      TableName: "challenges",
+    })
+    .promise();
+  await docClient.put({ Item: item, TableName: "challenges" }).promise();
 
   return {
     statusCode: 200,
